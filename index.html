@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Redirecionando para Escala 3x3 Maracanã" />
+  <meta name="theme-color" content="#ff5722" />
+  <title>Redirecionando • Escala 3x3 Maracanã</title>
+
+  <style>
+    /* ============================================
+       RESET & VARIÁVEIS (Design Tokens)
+       ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-primary: #ff5722;
+      --color-primary-dark: #e64a19;
+      --color-secondary: #ff9800;
+      --color-accent: #ffc107;
+      --color-bg-dark: #0f0f1e;
+      --color-bg-gradient: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #0f3460 100%);
+      --color-text: #ffffff;
+      --color-text-muted: rgba(255, 255, 255, 0.7);
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.37);
+      --shadow-glow: 0 0 40px rgba(255, 87, 34, 0.4);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================
+       BODY & BACKGROUND ANIMADO
+       ============================================ */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg-gradient);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    /* Orbs animados (gradientes radiais que se movem) */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s infinite ease-in-out;
+    }
+    .orb--1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--color-primary), transparent 70%);
+      top: -10%; left: -10%;
+    }
+    .orb--2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--color-secondary), transparent 70%);
+      bottom: -15%; right: -10%;
+      animation-delay: -7s;
+    }
+    .orb--3 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, var(--color-accent), transparent 70%);
+      top: 40%; left: 50%;
+      animation-delay: -13s;
+      opacity: 0.35;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(80px, -60px) scale(1.1); }
+      66%      { transform: translate(-60px, 40px) scale(0.95); }
+    }
+
+    /* Grade sutil no fundo */
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* ============================================
+       CONTAINER PRINCIPAL (Glassmorphism Card)
+       ============================================ */
+    .container {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: fadeInUp 0.8s var(--transition-smooth) both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      padding: 48px 36px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Borda brilhante animada */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: conic-gradient(
+        from 0deg,
+        transparent,
+        var(--color-primary),
+        var(--color-accent),
+        var(--color-secondary),
+        transparent
+      );
+      border-radius: inherit;
+      z-index: -1;
+      animation: rotateBorder 4s linear infinite;
+      opacity: 0.6;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: linear-gradient(135deg, rgba(30,20,50,0.9), rgba(20,30,60,0.9));
+      border-radius: calc(var(--radius-lg) - 1px);
+      z-index: -1;
+    }
+
+    @keyframes rotateBorder {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ============================================
+       LOGO SVG
+       ============================================ */
+    .logo {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 28px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(255, 87, 34, 0.4); }
+      50%      { box-shadow: 0 0 60px rgba(255, 152, 0, 0.7); }
+    }
+
+    .logo svg {
+      width: 48px;
+      height: 48px;
+      color: white;
+    }
+
+    /* ============================================
+       TIPOGRAFIA
+       ============================================ */
+    h1 {
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 0%, #ffca28 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       COUNTDOWN
+       ============================================ */
+    .countdown {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+    }
+
+    .countdown__number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      padding: 8px 14px;
+      background: rgba(255, 87, 34, 0.15);
+      border: 1px solid rgba(255, 87, 34, 0.3);
+      border-radius: var(--radius-md);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      font-variant-numeric: tabular-nums;
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .countdown__number.tick {
+      transform: scale(1.15);
+      color: var(--color-primary);
+    }
+
+    /* ============================================
+       BOTÃO
+       ============================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 28px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(255, 87, 34, 0.4);
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 87, 34, 0.6);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+
+    /* Efeito "ripple" brilhante passando no hover */
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transition: left 0.6s var(--transition-smooth);
+    }
+
+    .btn:hover::before { left: 100%; }
+
+    .btn__icon {
+      display: inline-flex;
+      transition: transform 0.3s var(--transition-smooth);
+    }
+
+    .btn:hover .btn__icon { transform: translateX(4px); }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      margin-top: 28px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .footer a {
+      color: var(--color-accent);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .footer a:hover { opacity: 1; }
+
+    /* ============================================
+       LOADER CIRCULAR
+       ============================================ */
+    .loader {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 16px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ============================================
+       ACESSIBILIDADE
+       ============================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================
+       RESPONSIVO
+       ============================================ */
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px; }
+      .logo { width: 72px; height: 72px; }
+      .logo svg { width: 38px; height: 38px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background decorativo (não interfere na interação) -->
+  <div class="background" aria-hidden="true">
+    <div class="orb orb--1"></div>
+    <div class="orb orb--2"></div>
+    <div class="orb orb--3"></div>
+  </div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <!-- Card principal -->
+  <main class="container">
+    <section class="card" role="region" aria-label="Redirecionamento">
+      <div class="logo" aria-hidden="true">
+        <!-- Ícone de basquete em SVG inline (sem dependências externas) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M4.93 4.93l14.14 14.14"></path>
+          <path d="M19.07 4.93L4.93 19.07"></path>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+      </div>
+
+      <div class="loader" role="status" aria-label="Carregando">
+        <span class="sr-only">Redirecionando...</span>
+      </div>
+
+      <h1>Escala 3x3 Maracanã</h1>
+      <p class="subtitle">
+        Você está sendo redirecionado para a plataforma oficial.<br>
+        Aguarde um momento...
+      </p>
+
+      <div class="countdown" aria-live="polite">
+        <span>Redirecionando em</span>
+        <span class="countdown__number" id="countdown-number" aria-label="segundos">5</span>
+        <span>s</span>
+      </div>
+
+      <a
+        href="https://escala-3x3-maracana-833992814836.us-west1.run.app/"
+        id="redirect-btn"
+        class="btn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>Acessar agora</span>
+        <span class="btn__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </span>
+      </a>
+
+      <p class="footer">
+        Se o redirecionamento não funcionar,
+        <a href="https://escala-3x3-maracana-833992814836.us-west1.run.app/" target="_blank" rel="noopener noreferrer">clique aqui</a>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    /**
+     * ============================================================
+     * LÓGICA DE REDIRECIONAMENTO
+     *
+     * Estratégia:
+     *   1. Countdown regressivo (5s) com animação por tick.
+     *   2. Redirecionamento automático ao fim do timer.
+     *   3. Botão manual sempre disponível (fallback + UX).
+     *   4. Usa `window.location.replace` para não poluir o histórico.
+     *   5. Se o JS falhar, o link <a> continua funcionando (progressive enhancement).
+     * ============================================================
+     */
+    (function () {
+      'use strict';
+
+      const TARGET_URL = 'https://escala-3x3-maracana-833992814836.us-west1.run.app/';
+      const INITIAL_SECONDS = 5;
+      const REDIRECT_DELAY_MS = INITIAL_SECONDS * 1000;
+
+      const countdownEl = document.getElementById('countdown-number');
+      const redirectBtn = document.getElementById('redirect-btn');
+
+      let remaining = INITIAL_SECONDS;
+      let lastTick = Date.now();
+
+      // Tick preciso baseado em timestamp (evita drift do setInterval)
+      function tick() {
+        const now = Date.now();
+        if (now - lastTick >= 1000) {
+          lastTick = now;
+          remaining -= 1;
+
+          if (remaining <= 0) {
+            countdownEl.textContent = '0';
+            performRedirect();
+            return;
+          }
+
+          countdownEl.textContent = remaining;
+
+          // Feedback visual a cada segundo
+          countdownEl.classList.add('tick');
+          setTimeout(() => countdownEl.classList.remove('tick'), 300);
+        }
+
+        requestAnimationFrame(tick);
+      }
+
+      // Redireciona substituindo a entrada do histórico
+      function performRedirect() {
+        // window.location.replace não cria nova entrada no histórico
+        // (melhor UX: botão "voltar" não retorna à página de redirecionamento)
+        window.location.replace(TARGET_URL);
+      }
+
+      // Botão manual: interrompe timer e redireciona imediatamente
+      redirectBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        performRedirect();
+      });
+
+      // Inicia o ciclo
+      requestAnimationFrame(tick);
+    })();
+  </script>
+
+  <!-- Screen reader only utility (a11y) -->
+  <style>
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+  </style>
+</body>
+</html>
